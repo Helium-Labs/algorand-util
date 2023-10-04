@@ -46,7 +46,7 @@ Refer to the individual utility functions documentation and the provided example
 To build the project, run:
 
 ```bash
-rollup --config rollup.config.mjs
+npm run build
 ```
 
 ## License
