@@ -4,7 +4,7 @@
   "description": "Useful Utilities for interacting with the Algorand blockchain",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup --config --sourcemap rollup.config.mjs && rimraf build && mkdir build && cp package**.json build && cp -RL dist build && yarn --cwd ./build install && cp -RL build ../GradianFrontend/GradianNPMPackageBuild"
+    "build": "rollup --config rollup.config.mjs"
   },
   "repository": {
     "type": "git",
