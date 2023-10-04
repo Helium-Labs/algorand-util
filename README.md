@@ -1,6 +1,8 @@
 # Algorand Blockchain Utilities
 
-This package offers a collection of utility functions specifically designed for interacting with the Algorand blockchain. It's equipped to handle various operations, including signing transactions in multiple ways, creating, updating, and interacting with smart contracts, asset transfers, and more.
+This package offers a collection of utility functions specifically designed for interacting with the Algorand blockchain. It's equipped to handle various operations, including signing transactions in multiple ways, creating, updating, and interacting with smart contracts, asset transfers, and more. 
+
+⭐ Stars ⭐ and contributions are highly appreciated.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
