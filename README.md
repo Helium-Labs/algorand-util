@@ -29,6 +29,8 @@ npm install @gradian/util
 
 ## Usage
 
+You need to provide your [Purestake API Node service](https://developer.algorand.org/tutorials/getting-started-purestake-api-service/) key as an environment variable with name PURESTAKE_KEY so that it's available at `process.env.PURESTAKE_KEY`. Purestake is a service that provides an Algorand node for creating an Algorand client, for interacting with the Algorand blockchain.
+
 Import the desired utilities and start using them:
 
 ```javascript
