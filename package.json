@@ -6,6 +6,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup --config --sourcemap rollup.config.mjs && rimraf build && mkdir build && cp package**.json build && cp -RL dist build && yarn --cwd ./build install && cp -RL build ../GradianFrontend/GradianNPMPackageBuild"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Helium-Labs/gradian-algorand-util"
+  },
   "author": "",
   "license": "ISC",
   "main": "dist/bundle.cjs",
