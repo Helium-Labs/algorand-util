@@ -31,15 +31,19 @@ npm install @gradian/util
 
 ## Usage
 
-You need to provide your [Purestake API Node service](https://developer.algorand.org/tutorials/getting-started-purestake-api-service/) key as an environment variable with name PURESTAKE_KEY so that it's available at `process.env.PURESTAKE_KEY`. Purestake is a service that provides an Algorand node for creating an Algorand client, for interacting with the Algorand blockchain.
-
-Import the desired utilities and start using them:
+Create an instance of AlgorandUtil by passing an Algorand client (AlgodV2 instance) as a dependency during instantiation. Once initialized, you can utilize the various utilities it offers. Check out the example below:
 
 ```javascript
-import { Types, sendRawTransaction, compileProgram, getWalletInfo } from '@gradian/util';
+import AlgorandUtil from '@gradian/util';
+
+// algoClient is an algorand client (AlgodV2 instance)
+const algoUtil = new AlgorandUtil(algoClient)
+// create some transactions, which are intended to be grouped together and signed with the provided wallets. If a wallet is missing its sk, 
+// that means it's a partially signed group to have its signing completed elsewhere.
+await algoUtil.executeGroupTransaction([transactions], [wallets])
 ```
 
-Refer to the individual utility functions documentation and the provided examples for more detailed usage.
+For more detailed usage, please refer to the documentation of individual utility functions and the provided examples.
 
 ## Building
 
