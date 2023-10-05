@@ -1,11 +1,5 @@
-import * as Types from "./types";
-{
-  Types;
-}
-
 import algosdk, { Algodv2, makeApplicationCreateTxn } from "algosdk";
 import { arc69Mimetypes } from "./constants";
-
 import {
   AssetInventoryItem,
   CreateApplicationConfig,
