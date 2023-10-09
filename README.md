@@ -49,7 +49,7 @@ const groupSigningRequest: SignTxnRequest[] = await algoUtil.generateGroupTransa
 
 // Create a WalletConnectSigner, for signing transactions using the specified WalletConnect connector instance (connected wallet) with the 'sign' function
 const walletConnectSigner: Signer.WalletConnectSigner = new Signer.WalletConnectSigner(algoClient, walletConnect.connector)
-// now we can use it to sign txns as is, or as an injected dependecy (e.g. into @gradian/arcminter)
+// now we can use it to sign txns
 await walletConnectSigner.sign(txns)
 ```
 
