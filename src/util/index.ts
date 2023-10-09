@@ -12,7 +12,7 @@ import {
 /**
  * Algorand Utility class
  */
-export default class AlgorandUtil {
+export class AlgorandUtil {
   algoClient: algosdk.Algodv2;
   /**
    * @param {Algodv2} algorandClient Algorand client instance
