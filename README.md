@@ -34,7 +34,7 @@ npm install @gradian/util
 Create an instance of AlgorandUtil by passing an Algorand client (AlgodV2 instance) as a dependency during instantiation. Once initialized, you can utilize the various utilities it offers. Check out the example below:
 
 ```javascript
-import AlgorandUtil from '@gradian/util';
+import { AlgorandUtil, Signer } from '@gradian/util';
 
 // algoClient is an algorand client (AlgodV2 instance)
 const algoUtil = new AlgorandUtil(algoClient)
@@ -44,6 +44,12 @@ const algoUtil = new AlgorandUtil(algoClient)
 // The function returns a grouped transaction that might be partially signed. 
 // Any unsigned transactions can be signed elsewhere, e.g., in the frontend using WalletConnect.
 const groupSigningRequest: SignTxnRequest[] = await algoUtil.generateGroupTransactionSigningRequest(transactions, wallets)
+
+
+// Create a WalletConnectSigner, for signing transactions using the specified WalletConnect connector instance (connected wallet) with the 'sign' function
+const walletConnectSigner: Signer.WalletConnectSigner = new Signer.WalletConnectSigner(algoConnect, walletConnect.connector)
+// now we can use it to sign txns as is, or as an injected dependecy (e.g. into @gradian/arcminter)
+await walletConnectSigner.sign(txns)
 ```
 
 For more detailed usage, please refer to the documentation of individual utility functions and the provided examples.
