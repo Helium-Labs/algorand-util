@@ -24,3 +24,11 @@ export interface Wallet {
     sk?: Uint8Array;
 }
 export type FalseyWallet = Wallet | undefined
+
+// Type for a transaction signing request, which may or may not already be signed
+export interface SignTxnRequest {
+    txn: string;
+    message: string;
+    stxn?: string;
+    signers?: Wallet[];
+}

@@ -4,6 +4,7 @@ import {
   AssetInventoryItem,
   CreateApplicationConfig,
   FalseyWallet,
+  SignTxnRequest,
   Wallet,
 } from "./types";
 
@@ -104,17 +105,17 @@ export default class AlgorandUtil {
   }
 
   /**
-   * Execute a group transaction after signing it with the provided wallets
-   * @param {any} txns Transactions to execute
-   * @param {Wallet[]} wallets Wallets to sign the transactions with
-   * Return an array of (partially) signed transactions
+   * Group an array of transactions, and sign them with the provided wallets if possible returning a group of partially signed transactions.
+   * @param {algosdk.Transaction[]} txns Transactions to group and (partially) sign
+   * @param {FalseyWallet[]} accounts Wallets to sign the transactions with, if possible (i.e. sk is available)
+   * @returns {Promise<SignTxnRequest[]>} Grouped transactions, signed if possible with the provided wallets
    */
-  async executeGroupTransaction(
+  async generateGroupTransactionSigningRequest(
     txns: algosdk.Transaction[],
     accounts: FalseyWallet[]
-  ): Promise<any[]> {
+  ): Promise<SignTxnRequest[]> {
     algosdk.assignGroupID(txns);
-    const stxns: any = [];
+    const stxns: SignTxnRequest[] = [];
     /*
     if account is undefined, then it needs user signing i.e. it remains an unsigned transaction.
     */
@@ -184,7 +185,7 @@ export default class AlgorandUtil {
       suggestedParams,
       appId
     );
-    const stxns = await this.executeGroupTransaction([txn], [undefined]);
+    const stxns = await this.generateGroupTransactionSigningRequest([txn], [undefined]);
 
     return stxns;
   }
@@ -216,7 +217,7 @@ export default class AlgorandUtil {
       suggestedParams,
       appId
     );
-    const stxns = await this.executeGroupTransaction([txn], [wallet]);
+    const stxns = await this.generateGroupTransactionSigningRequest([txn], [wallet]);
 
     await this.submitSignedTransactions(stxns);
 
@@ -266,7 +267,7 @@ export default class AlgorandUtil {
         amount: amount,
         suggestedParams,
       });
-    const stxns = await this.executeGroupTransaction(
+    const stxns = await this.generateGroupTransactionSigningRequest(
       [transferTx],
       [from_wallet]
     );
@@ -352,7 +353,7 @@ export default class AlgorandUtil {
         suggestedParams,
       });
     });
-    const stxns = await this.executeGroupTransaction(
+    const stxns = await this.generateGroupTransactionSigningRequest(
       assetOptInTxns,
       Array(assets.length).fill(wallet)
     );
@@ -607,7 +608,7 @@ export default class AlgorandUtil {
       boxes
     );
 
-    const stxns = await this.executeGroupTransaction([txn], [creatorWallet]);
+    const stxns = await this.generateGroupTransactionSigningRequest([txn], [creatorWallet]);
 
     return stxns;
   }
@@ -697,7 +698,7 @@ export default class AlgorandUtil {
       approvalProgram,
       clearProgram
     );
-    const stxns = await this.executeGroupTransaction([txn], [creatorWallet]);
+    const stxns = await this.generateGroupTransactionSigningRequest([txn], [creatorWallet]);
 
     return stxns;
   }
@@ -731,7 +732,7 @@ export default class AlgorandUtil {
       accounts: [serverWallet.addr],
     });
 
-    const stxns = await this.executeGroupTransaction([appTxn], [serverWallet]);
+    const stxns = await this.generateGroupTransactionSigningRequest([appTxn], [serverWallet]);
     const response = await this.submitSignedTransactions(stxns);
 
     console.log(`[Contract ${appIndex}] Claimed fees`);
@@ -771,7 +772,7 @@ export default class AlgorandUtil {
       foreignAssets: [assetIndex],
     });
 
-    const stxns = await this.executeGroupTransaction([appTxn], [serverWallet]);
+    const stxns = await this.generateGroupTransactionSigningRequest([appTxn], [serverWallet]);
     const response = await this.submitSignedTransactions(stxns);
 
     console.log(`[Contract ${appIndex}] Opted into asset:`, assetIndex);
@@ -827,7 +828,7 @@ export default class AlgorandUtil {
       amount: amount,
       suggestedParams: suggestedParams,
     });
-    const stxns = await this.executeGroupTransaction(
+    const stxns = await this.generateGroupTransactionSigningRequest(
       [paymentTxn],
       [serverWallet]
     );
@@ -894,7 +895,7 @@ export default class AlgorandUtil {
         suggestedParams,
       });
     // sign the transaction
-    const stxns = await this.executeGroupTransaction([transferTx], [wallet]);
+    const stxns = await this.generateGroupTransactionSigningRequest([transferTx], [wallet]);
     // submit the transaction
     const response = await this.submitSignedTransactions(stxns);
     console.log("Completed asset transfer from contract");
@@ -909,7 +910,7 @@ export default class AlgorandUtil {
   async deleteApplication(appIndex: number, wallet: Wallet) {
     let params = await this.algoClient.getTransactionParams().do();
     let txn = algosdk.makeApplicationDeleteTxn(wallet.addr, params, appIndex);
-    const stxns = await this.executeGroupTransaction([txn], [wallet]);
+    const stxns = await this.generateGroupTransactionSigningRequest([txn], [wallet]);
     // submit the transaction
     const response = await this.submitSignedTransactions(stxns);
     return response;
