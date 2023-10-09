@@ -25,10 +25,19 @@ export interface Wallet {
 }
 export type FalseyWallet = Wallet | undefined
 
-// Type for a transaction signing request, which may or may not already be signed
-export interface SignTxnRequest {
+
+// Signed transaction in a Group transaction signing request.
+export interface SignedTxnInGroup {
     txn: string;
     message: string;
-    stxn?: string;
-    signers?: Wallet[];
+    stxn: string;
+    signers: Wallet[];
 }
+// Unsigned transaction in a Group transaction signing request.
+export interface UnsignedTxnInGroup {
+    txn: string;
+    message: string;
+}
+
+// Transaction in a Group transaction signing request, which may or may not already be signed.
+export type SignTxnRequest = SignedTxnInGroup | UnsignedTxnInGroup;

@@ -5,6 +5,7 @@ import {
   CreateApplicationConfig,
   FalseyWallet,
   SignTxnRequest,
+  SignedTxnInGroup,
   Wallet,
 } from "./types";
 
@@ -139,7 +140,7 @@ export default class AlgorandUtil {
         stxns.push({
           stxn: base64EncodedTxn,
           txn: encodedTxn,
-          message: "Gradian Transaction Signing Request",
+          message: "Transaction Signing Request",
           signers: [],
         });
       } else {
@@ -148,7 +149,7 @@ export default class AlgorandUtil {
         ).toString("base64");
         stxns.push({
           txn: encodedTxn,
-          message: "Gradian Transaction Signing Request",
+          message: "Transaction Signing Request",
         });
       }
     }
@@ -159,11 +160,11 @@ export default class AlgorandUtil {
 
   /**
    * Submit array of signed transactions to the network
-   * @param {any[]} signedTxns Array of signed transactions {stxn: base64EncodedTxn, txn: encodedTxn, message: "Gradian Transaction Signing Request", signers: []}
+   * @param {SignedTxnInGroup[]} signedTxns Signed transactions in a Group transaction signing request.
    * @returns {Promise<Record<string, any>>} Raw transaction response
    */
   async submitSignedTransactions(
-    signedTxns: any[]
+    signedTxns: SignedTxnInGroup[]
   ): Promise<Record<string, any>> {
     const stxnsUint8Array: Uint8Array[] = signedTxns.map((stxn: any) => {
       return new Uint8Array(Buffer.from(stxn.stxn, "base64"));
@@ -219,7 +220,12 @@ export default class AlgorandUtil {
     );
     const stxns = await this.generateGroupTransactionSigningRequest([txn], [wallet]);
 
-    await this.submitSignedTransactions(stxns);
+    // Assert sk is defined, therefore group is fully signed
+    if (!wallet.sk) {
+      throw new Error("Wallet does not have a secret key");
+    }
+
+    await this.submitSignedTransactions(stxns as SignedTxnInGroup[]);
 
     return stxns;
   }
@@ -733,7 +739,13 @@ export default class AlgorandUtil {
     });
 
     const stxns = await this.generateGroupTransactionSigningRequest([appTxn], [serverWallet]);
-    const response = await this.submitSignedTransactions(stxns);
+
+    // Assert sk is defined, therefore group is fully signed
+    if (!serverWallet.sk) {
+      throw new Error("serverWallet does not have a secret key");
+    }
+
+    const response = await this.submitSignedTransactions(stxns as SignedTxnInGroup[]);
 
     console.log(`[Contract ${appIndex}] Claimed fees`);
     return response;
@@ -773,7 +785,13 @@ export default class AlgorandUtil {
     });
 
     const stxns = await this.generateGroupTransactionSigningRequest([appTxn], [serverWallet]);
-    const response = await this.submitSignedTransactions(stxns);
+
+    // Assert sk is defined, therefore group is fully signed
+    if (!serverWallet.sk) {
+      throw new Error("serverWallet does not have a secret key");
+    }
+
+    const response = await this.submitSignedTransactions(stxns as SignedTxnInGroup[]);
 
     console.log(`[Contract ${appIndex}] Opted into asset:`, assetIndex);
     return response;
@@ -897,7 +915,13 @@ export default class AlgorandUtil {
     // sign the transaction
     const stxns = await this.generateGroupTransactionSigningRequest([transferTx], [wallet]);
     // submit the transaction
-    const response = await this.submitSignedTransactions(stxns);
+
+    // Assert sk is defined, therefore group is fully signed
+    if (!wallet.sk) {
+      throw new Error("wallet does not have a secret key");
+    }
+
+    const response = await this.submitSignedTransactions(stxns as SignedTxnInGroup[]);
     console.log("Completed asset transfer from contract");
     return response;
   }
@@ -910,9 +934,15 @@ export default class AlgorandUtil {
   async deleteApplication(appIndex: number, wallet: Wallet) {
     let params = await this.algoClient.getTransactionParams().do();
     let txn = algosdk.makeApplicationDeleteTxn(wallet.addr, params, appIndex);
+    
+    // Assert sk is defined, therefore group is fully signed
+    if (!wallet.sk) {
+      throw new Error("wallet does not have a secret key");
+    }
+
     const stxns = await this.generateGroupTransactionSigningRequest([txn], [wallet]);
     // submit the transaction
-    const response = await this.submitSignedTransactions(stxns);
+    const response = await this.submitSignedTransactions(stxns as SignedTxnInGroup[]);
     return response;
   }
 
