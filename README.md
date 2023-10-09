@@ -20,6 +20,7 @@ This package offers a collection of utility functions specifically designed for 
   - Compile, create, update, and delete Algorand smart contracts
   - Utility functions for Algorand wallets
   - And more...
+- Transaction Signer abstraction, including implementations for signing with transactions with Wallet Connect and a key pair.
 
 ## Installation
 
