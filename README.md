@@ -38,9 +38,12 @@ import AlgorandUtil from '@gradian/util';
 
 // algoClient is an algorand client (AlgodV2 instance)
 const algoUtil = new AlgorandUtil(algoClient)
-// create some transactions, which are intended to be grouped together and signed with the provided wallets. If a wallet is missing its sk, 
-// that means it's a partially signed group to have its signing completed elsewhere.
-await algoUtil.executeGroupTransaction([transactions], [wallets])
+
+// Groups the 'transactions' array and signs each transaction using the associated wallet from the 'wallets' array (of type FalseyWallet[]).
+// Only transactions with a defined secret key (sk) in the wallet are signed.
+// The function returns a grouped transaction that might be partially signed. 
+// Any unsigned transactions can be signed elsewhere, e.g., in the frontend using WalletConnect.
+const groupSigningRequest: SignTxnRequest[] = await algoUtil.generateGroupTransactionSigningRequest(transactions, wallets)
 ```
 
 For more detailed usage, please refer to the documentation of individual utility functions and the provided examples.
